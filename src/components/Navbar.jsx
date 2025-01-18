@@ -1,0 +1,136 @@
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { FiMenu, FiX } from "react-icons/fi";
+import { CiUser } from "react-icons/ci";
+import { CiHeart } from "react-icons/ci";
+import { IoIosNotificationsOutline } from "react-icons/io";
+
+
+const Navbar = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const isActive = (path) => window.location.pathname === path;
+
+  const user = JSON.parse(localStorage.getItem('user'))
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    localStorage.removeItem('user')
+    localStorage.removeItem('token')
+    navigate('/')
+    window.dispatchEvent(new Event('storage'))
+  }
+
+  return (
+    <div className="sticky top-0 z-[60] w-full font-poppins text-base">
+      <nav className="bg-white border-b border-gray-200 shadow-sm h-24">
+        <div className="flex items-center justify-between px-4 md:px-8 py-2 max-w-full">
+          <div className="text-lg md:text-xl font-bold flex-shrink-0 ml-2">
+            <Link to="/" className="text-black hover:text-gray-600">
+              <img src="logo.png" className="h-20 w-20"/>
+            </Link>
+          </div>
+
+          <button
+            className="md:hidden text-2xl flex-shrink-0"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <FiX /> : <FiMenu />}
+          </button>
+
+          <nav
+            className={`${
+              isMenuOpen ? "block" : "hidden"
+            } absolute top-full left-0 w-full bg-white md:static md:flex md:flex-1 md:justify-center`}
+          >
+            <ul className="flex flex-col md:flex-row md:space-x-8 p-4 md:p-0 text-gray-700">
+              {[
+                { path: "/", label: "Home" },
+                { path: "/packages", label: "Packages" },
+                { path: "/plans", label: "My Plans" },
+                { path: "/bookings", label: "My Bookings" },
+                { path: "/contact", label: "Contact" },
+                { path: "/works", label: "How it works" },
+              ].map((item, index) => (
+                <li key={index} className="text-sm">
+                  <Link
+                    to={item.path}
+                    className={`block px-2 py-2 md:p-0 text-center ${
+                      isActive(item.path)
+                        ? "border-b-2 border-black text-black"
+                        : "text-gray-600 hover:text-black"
+                    }`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="flex items-center space-x-2 md:space-x-4 flex-shrink-0">
+          <Link to="/notification">
+              <button className="text-gray-600 hover:text-black">
+                <IoIosNotificationsOutline className="text-xl" />
+              </button>
+            </Link>
+            <Link to="/wishlist">
+              <button className="text-gray-600 hover:text-black">
+                <CiHeart className="text-xl" />
+              </button>
+            </Link>
+
+            {user ? (
+              <div className="relative">
+                <button
+                  className="text-gray-600 hover:text-black"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                >
+                  <CiUser className="text-xl" />
+                </button>
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg">
+                    <ul>
+                      <li>
+                        <Link
+                          to="/profile"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+                        >
+                          My Profile
+                        </Link>
+                      </li>
+                      <li>
+                        <button
+                          onClick={handleLogout}
+                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+                        >
+                          Logout
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <Link to="/login">
+                  <button className="px-4 py-2 border border-primary text-primary rounded hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-primary">
+                    Login
+                  </button>
+                </Link>
+                <Link to="/register">
+                  <button className="px-4 py-2 border border-primary text-primary rounded hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-primary">
+                    Register
+                  </button>
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      </nav>
+    </div>
+  );
+};
+
+export default Navbar;
