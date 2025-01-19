@@ -5,7 +5,6 @@ import {
   getReviewsApi,
   addToWishlistApi,
   removeFromWishlistApi,
-  addToPlansApi,
 } from "../../apis/Api";
 import { useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar";
@@ -39,18 +38,47 @@ const DetailsPage = () => {
     fetchEventDetails();
   }, [id]);
 
+  // Check if event is already in wishlist (using localStorage)
+  useEffect(() => {
+    const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    if (wishlist.includes(event?.id)) {
+      setIsWishlisted(true);
+    }
+  }, [event]);
+
   // Add/Remove from Wishlist
   const handleWishlistToggle = async () => {
     try {
       if (isWishlisted) {
-        await removeFromWishlistApi(event._id);
-        setIsWishlisted(false);
+        const response = await removeFromWishlistApi(event._id);
+        if (response.data.success) {
+          setIsWishlisted(false);
+          toast.success(response.data.message || "Removed from wishlist");
+
+          // Remove from localStorage
+          let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+          wishlist = wishlist.filter((item) => item !== event._id);
+          localStorage.setItem("wishlist", JSON.stringify(wishlist));
+        } else {
+          toast.error(response.data.message || "Failed to remove from wishlist");
+        }
       } else {
-        await addToWishlistApi(event._id);
-        setIsWishlisted(true);
+        const response = await addToWishlistApi(event._id);
+        if (response.data.success) {
+          setIsWishlisted(true);
+          toast.success(response.data.message || "Added to wishlist");
+
+          // Add to localStorage
+          let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+          wishlist.push(event._id);
+          localStorage.setItem("wishlist", JSON.stringify(wishlist));
+        } else {
+          toast.error(response.data.message || "Failed to add to wishlist");
+        }
       }
     } catch (error) {
       console.error("Failed to update wishlist:", error);
+      toast.error("An error occurred while updating the wishlist");
     }
   };
 
@@ -60,11 +88,12 @@ const DetailsPage = () => {
       if (response.data.success) {
         toast.success(response.data.message);
       } else {
-        toast.error(response.data.message || "Failed to add to plans");}
+        toast.error(response.data.message || "Failed to add to plans");
+      }
     } catch (error) {
       console.error("Failed to add to plans:", error);
     }
-  }
+  };
 
   if (!event) {
     return <p>Loading event details...</p>;
@@ -99,23 +128,18 @@ const DetailsPage = () => {
           {/* Event Details */}
           <div className="flex-1">
             <h1 className="text-3xl font-jacques mb-4">{event.eventTitle}</h1>
-            <p className="text-lg text-red-600 mb-2">
-              Rs {event.eventPrice}
-            </p>
-            <p className="text-sm text-gray-500 mb-6">
-              Views: {event.views} views
-            </p>
+            <p className="text-lg text-red-600 mb-2">Rs {event.eventPrice}</p>
+            <p className="text-sm text-gray-500 mb-6">Views: {event.views} views</p>
 
             {/* Decoration Description Section */}
             <div className="bg-gray-50 p-6 rounded-lg shadow-md">
-              <h2 className="text-2xl font-jacques mb-10">
-                Decoration Description
-              </h2>
+              <h2 className="text-2xl font-jacques mb-10">Decoration Description</h2>
               <p className="text-gray-700 mb-6">{event.eventDescription}</p>
               <div className="flex justify-center">
-                <button 
-                onClick={handleAddToPlans}
-                className="bg-primary text-white py-2 px-6 rounded hover:bg-secondary-dark">
+                <button
+                  onClick={handleAddToPlans}
+                  className="bg-primary text-white py-2 px-6 rounded hover:bg-secondary-dark"
+                >
                   Add to Plans
                 </button>
               </div>
@@ -149,31 +173,6 @@ const DetailsPage = () => {
           ) : (
             <p className="text-gray-600">No reviews yet.</p>
           )}
-
-          {/* Add Your Review */}
-          <h3 className="text-lg font-semibold mb-4">Add your review</h3>
-          <form className="flex flex-col gap-4">
-            <textarea
-              placeholder="Write a review"
-              className="border border-gray-300 p-3 rounded-lg w-full"
-            ></textarea>
-            <div className="flex items-center gap-2">
-              <p className="font-medium">Rating:</p>
-              <div className="flex gap-1">
-                {Array(5)
-                  .fill(0)
-                  .map((_, i) => (
-                    <FaStar key={i} className="text-gray-400 cursor-pointer" />
-                  ))}
-              </div>
-            </div>
-            <button
-              type="submit"
-              className="bg-primary text-white py-2 px-6 rounded-lg"
-            >
-              Submit
-            </button>
-          </form>
         </div>
       </div>
       <Footer />

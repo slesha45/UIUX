@@ -10,33 +10,38 @@ const MyWishlist = () => {
 
   useEffect(() => {
     fetchWishlist();
-  }, [])
+  }, []);
 
   const fetchWishlist = async () => {
     try {
       const res = await getUserWishlistApi();
-      if (Array.isArray(res.data.data)) {
+      if (res.data.success && Array.isArray(res.data.data)) {
         setWishlist(res.data.data);
       } else {
-        throw new Error('Wishlist data is not an array');
+        toast.error("Failed to fetch wishlist");
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Error fetching wishlist");
+      toast.error(err.response?.data?.message || "Error fetching wishlist");
     }
   };
 
   const handleRemove = async (eventId) => {
     const confirmDialog = window.confirm("Are you sure you want to remove this event from your wishlist?");
-    if (confirmDialog) return;
+    if (!confirmDialog) return;
+
     try {
-      await removeFromWishlistApi(eventId);
-      toast.success("Event removed from wishlist");
-      fetchWishlist();
+      const response = await removeFromWishlistApi(eventId);
+      if (response.data.success) {
+        toast.success(response.data.message || "Event removed from wishlist");
+        fetchWishlist();
+      } else {
+        toast.error(response.data.message || "Failed to remove from wishlist");
+      }
     } catch (err) {
-      setError(err.response?.data?.message || "Error removing event from wishlist");
-      toast.error('Error removing event from wishlist');
+      toast.error(err.response?.data?.message || "Error removing event from wishlist");
     }
   };
+
   return (
     <div>
       <Navbar />
@@ -46,25 +51,31 @@ const MyWishlist = () => {
         {wishlist.length === 0 ? (
           <p>Your wishlist is empty.</p>
         ) : (
-
-
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 font-poppins">
-            <div className="border rounded-lg shadow-sm hover:shadow-lg overflow-hidden">
-              <img
-                src="wedding.png" // Replace with actual image URL
-                alt="Royal red and white stage"
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4">
-                <h2 className="text-lg font-semibold mb-2">Royal red and white stage</h2>
-                <p className="text-red-500 font-bold mb-4">Rs 9,000</p>
-                <div className='flex justify-center'>
-                  <button className="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark">
-                    Add to plans
-                  </button>
+            {wishlist.map((event) => (
+              <div key={event._id} className="border rounded-lg shadow-sm hover:shadow-lg overflow-hidden">
+                <img
+                  src={`http://localhost:5000/public/eventMain/${event.eventImage}`}
+                  alt={event.eventTitle}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <h2 className="text-lg font-semibold mb-2">{event.eventTitle}</h2>
+                  <p className="text-red-500 font-bold mb-4">Rs {event.eventPrice}</p>
+                  <div className="flex justify-center gap-2">
+                    <button
+                      onClick={() => handleRemove(event._id)}
+                      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                    >
+                      Remove
+                    </button>
+                    <button className="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark">
+                      Add to plans
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
         )}
       </div>
