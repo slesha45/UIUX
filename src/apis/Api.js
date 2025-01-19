@@ -73,7 +73,7 @@ export const updatePaymentMethod = (paymentData) => Api.put('/api/booking/update
 export const createContact = (data) => Api.post('/api/contact/contact', data, config);
 export const getAllContacts = () => Api.get('/api/contact/all', config);
 
-export const addReviewApi = (data) => Api.post('/api/review/add', data, config);
+export const addReviewApi = (eventId, reviewData) => Api.post('/api/review/add',{ eventId, ...reviewData }, config);
 export const getReviewsApi = (eventId) => Api.get(`/api/review/event/${eventId}`);
 
 // export const addPlan = (eventId) => Api.post('/api/plan/add', { eventId }, config);

@@ -5,6 +5,7 @@ import {
   getReviewsApi,
   addToWishlistApi,
   removeFromWishlistApi,
+  addReviewApi,
 } from "../../apis/Api";
 import { useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar";
@@ -16,6 +17,8 @@ const DetailsPage = () => {
   const [event, setEvent] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
 
   // Fetch event details and reviews
   useEffect(() => {
@@ -38,7 +41,6 @@ const DetailsPage = () => {
     fetchEventDetails();
   }, [id]);
 
-  // Check if event is already in wishlist (using localStorage)
   useEffect(() => {
     const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
     if (wishlist.includes(event?.id)) {
@@ -94,6 +96,28 @@ const DetailsPage = () => {
       console.error("Failed to add to plans:", error);
     }
   };
+
+  const handleAddReview = async () => {
+    try {
+      const reviewData = { rating, comment };
+      const response = await addReviewApi(id, reviewData);
+      if (response.data.success) {
+        toast.success(response.data.message);
+        setReviews([response.data.review, ...reviews]);
+        setRating(0);
+        setComment("");
+      } else {
+        toast.error(response.data.message || "Failed to add review");
+      }
+    } catch (error) {
+      console.error("Failed to add review:", error);
+      if (error.response && error.response.status === 401) {
+        toast.error("Please log in first"); // If unauthorized
+      } else {
+        toast.error("An error occurred while adding the review");
+      }
+    }
+  }
 
   if (!event) {
     return <p>Loading event details...</p>;
@@ -151,28 +175,58 @@ const DetailsPage = () => {
         <div className="mt-10">
           <h2 className="text-xl font-semibold mb-4">Reviews and Ratings</h2>
 
-          {/* Display Reviews */}
-          {reviews.length > 0 ? (
+
+          {/* Fetch and Display Reviews */}
+          {reviews && reviews.length > 0 ? (
             reviews.map((review, index) => (
-              <div key={index} className="mb-6">
-                <div className="flex items-center gap-1 mb-1">
-                  {Array(review.rating)
-                    .fill(0)
-                    .map((_, i) => (
-                      <FaStar key={i} className="text-yellow-500" />
-                    ))}
-                  {Array(5 - review.rating)
-                    .fill(0)
-                    .map((_, i) => (
-                      <FaStar key={i} className="text-gray-300" />
-                    ))}
+              <div key={index} className="mb-6 border-b pb-4">
+                <div className="flex items-center gap-1 mb-2">
+                  {/* Render filled stars for rating */}
+                  {Array.from({ length: review.rating }, (_, i) => (
+                    <FaStar key={i} className="text-yellow-500" />
+                  ))}
+                  {/* Render empty stars for remaining */}
+                  {Array.from({ length: 5 - review.rating }, (_, i) => (
+                    <FaStar key={i} className="text-gray-300" />
+                  ))}
                 </div>
-                <p className="text-gray-800 mt-2">{review.comment}</p>
+                <p className="text-gray-800">{review.comment}</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Reviewed by: {review.user?.name || "Anonymous"}
+                </p>
               </div>
             ))
           ) : (
             <p className="text-gray-600">No reviews yet.</p>
           )}
+
+          {/* Add New Review */}
+          <div className="mt-6 bg-gray-50 p-6 rounded-lg shadow-md">
+            <h3 className="text-lg font-semibold mb-4">Add a Review</h3>
+            <div className="flex items-center gap-2 mb-4">
+              {/* Rating Stars */}
+              {[1, 2, 3, 4, 5].map((star) => (
+                <FaStar
+                  key={star}
+                  className={`cursor-pointer ${star <= rating ? "text-yellow-500" : "text-gray-300"}`}
+                  onClick={() => setRating(star)}
+                />
+              ))}
+            </div>
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded mb-4"
+              rows="4"
+              placeholder="Write your review"
+            />
+            <button
+              onClick={handleAddReview}
+              className="bg-primary text-white py-2 px-6 rounded hover:bg-secondary-dark"
+            >
+              Submit Review
+            </button>
+          </div>
         </div>
       </div>
       <Footer />
