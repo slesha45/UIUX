@@ -1,90 +1,91 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import { MdDelete } from "react-icons/md";
+import { getPlansApi, removeFromPlansApi } from '../../apis/Api';
+import { toast } from 'react-toastify';
 
 
 const MyPlans = () => {
   const navigate = useNavigate();
-  const [plans, setPlans] = useState([
-    {
-      title: 'Royal red and white stage',
-      price: 9000,
-      imageUrl: 'https://i.pinimg.com/736x/7a/94/54/7a945491ea6a631f5d68f302cc3bdc60.jpg',
-      rating: 5,
-    },
-    {
-      title: 'Elegant floral backdrop',
-      price: 12000,
-      imageUrl: 'https://i.pinimg.com/736x/7a/94/54/7a945491ea6a631f5d68f302cc3bdc60.jpg',
-      rating: 4,
-    },
-    {
-      title: 'Elegant floral backdrop',
-      price: 12000,
-      imageUrl: 'https://i.pinimg.com/736x/7a/94/54/7a945491ea6a631f5d68f302cc3bdc60.jpg',
-      rating: 4,
-    },
-    {
-      title: 'Elegant floral backdrop',
-      price: 12000,
-      imageUrl: 'https://i.pinimg.com/736x/7a/94/54/7a945491ea6a631f5d68f302cc3bdc60.jpg',
-      rating: 4,
-    },
-    {
-      title: 'Elegant floral backdrop',
-      price: 12000,
-      imageUrl: 'https://i.pinimg.com/736x/7a/94/54/7a945491ea6a631f5d68f302cc3bdc60.jpg',
-      rating: 4,
-    },
-  ]);
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+ 
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const response = await getPlansApi();
+        setPlans(response.data.plans);
+        setLoading(false);
+      } catch (error) {
+        setError("Failed to fetch plans");
+        setLoading(false);
+      }
+    }
+    fetchPlans();
+  }, [])
 
-  const totalCost = plans.reduce((sum, plan) => sum + plan.price, 0);
+  const totalCost = plans.reduce((sum, plan) => sum + (plan.event.eventPrice || 0), 0);
 
-  // Delete plan function
-  const deletePlan = (index) => {
-    setPlans((prevPlans) => prevPlans.filter((_, i) => i !== index));
-  };
+  const deletePlan = async (eventId) => {
+    try {
+      await removeFromPlansApi(eventId);
+      setPlans((prevPlans) => prevPlans.filter((plan) => plan._id !== eventId));
+    } catch (error) {
+      toast.success("Failed to delete plan");
+    }
+  }
+  
+  if (loading) return <div>Loading...</div>
+  if (error) return <div>{error}</div>
 
   return (
     <div>
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 mt-8">
         <h1 className="text-5xl font-jacques mb-6">My Plans</h1>
+
         {/* Plans Section */}
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 font-poppins">
-          {plans.map((plan, index) => (
-            <div
-              key={index}
-              className="border rounded-lg shadow-md overflow-hidden relative"
-            >
-              {/* Image */}
-              <img
-                src={plan.imageUrl}
-                alt={plan.title}
-                className="w-full h-48 object-cover"
-              />
-              {/* Details */}
-              <div className="p-4">
-                <h2 className="text-lg font-semibold mb-2">{plan.title}</h2>
-                <p className="text-primary font-bold mb-2">Rs {plan.price}</p>
-                {/* Rating */}
-                <div className="flex items-center mb-4">
-                  {Array.from({ length: plan.rating }, (_, i) => (
-                    <span key={i} className="text-yellow-500">&#9733;</span>
-                  ))}
+        {plans.length > 0 ? (
+            plans.map((plan) => (
+              <div
+                key={plan._id}
+                className="border rounded-lg shadow-md overflow-hidden relative"
+              >
+                {/* Image */}
+                <img
+                  src={plan.event.eventImage}
+                  className="w-full h-48 object-cover"
+                />
+                {/* Details */}
+                <div className="p-4">
+                  <h2 className="text-lg font-semibold mb-2">{plan.event.eventTitle}</h2>
+                  <p className="text-primary font-bold mb-2">Rs {plan.event.eventPrice}</p>
+                  {/* Rating */}
+                  <div className="flex items-center mb-4">
+                    {Array.from({ length: plan.event.rating }, (_, i) => (
+                      <span key={i} className="text-yellow-500">&#9733;</span>
+                    ))}
+                  </div>
+                  {/* Delete Button */}
+                  <button
+                    className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                    onClick={() => deletePlan(plan._id)}
+                  >
+                    <MdDelete />
+                  </button>
                 </div>
-                {/* Delete Button */}
-                <button
-                  className="absolute top-2 right-2 text-red-500 hover:text-red-700"
-                  onClick={() => deletePlan(index)}
-                >
-                  <MdDelete/>
-                </button>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="col-span-full text-center text-gray-500">
+              No plans yet. Start adding some!
+            </p>
+          )}
+
           {/* Add More */}
           <div className="border rounded-lg shadow-md flex items-center justify-center text-gray-400">
             <button
@@ -110,5 +111,4 @@ const MyPlans = () => {
     </div>
   );
 };
-
 export default MyPlans;

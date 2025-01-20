@@ -1,4 +1,3 @@
-import { data } from "autoprefixer";
 import axios from "axios";
 
 const Api = axios.create({
@@ -76,12 +75,8 @@ export const getAllContacts = () => Api.get('/api/contact/all', config);
 export const addReviewApi = (eventId, reviewData) => Api.post('/api/review/add',{ eventId, ...reviewData }, config);
 export const getReviewsApi = (eventId) => Api.get(`/api/review/event/${eventId}`);
 
-// export const addPlan = (eventId) => Api.post('/api/plan/add', { eventId }, config);
-// export const getPlans = () => Api.get('/api/plan/get', config);
-// export const deleteSinglePlan = (planId) => Api.delete(`/api/plan/delete/${planId}`, config);
-
 export const addToPlansApi = (eventId) => Api.post('/api/plan/add', { eventId }, config);
-export const getPlansApi = () => Api.get('/api/plan/get', config);
+export const getPlansApi = () => Api.get('/api/plan/all', config);
 export const removeFromPlansApi = (eventId) => Api.delete(`/api/plan/remove/${eventId}`, config);
 
 export const createPackageApi = (data) => Api.post('/api/package/create', data)

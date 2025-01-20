@@ -6,6 +6,7 @@ import {
   addToWishlistApi,
   removeFromWishlistApi,
   addReviewApi,
+  addToPlansApi,
 } from "../../apis/Api";
 import { useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar";
@@ -125,7 +126,7 @@ const DetailsPage = () => {
 
   return (
     <>
-      <Navbar />
+      <Navbar/>
       <div className="container mx-auto p-6 font-poppins">
         {/* Event Header */}
         <div className="flex flex-col md:flex-row gap-6">
