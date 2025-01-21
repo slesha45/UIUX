@@ -1,34 +1,38 @@
-import React from 'react';
-import Navbar from '../../components/Navbar';
+import React, { useEffect, useState } from 'react';
+import { getUserBookings } from '../../apis/Api';
 import Footer from '../../components/Footer';
+import Navbar from '../../components/Navbar';
 
 const MyBookings = () => {
-  const bookings = [
-    {
-      eventName: 'Wedding',
-      price: 9000,
-      date: '15/02/2025',
-      time: '10:00 AM',
-      status: 'Pending',
-      paymentMethod: 'Proceed to payment',
-    },
-    {
-      eventName: 'Mehendi',
-      price: 7000,
-      date: '15/02/2025',
-      time: '11:00 AM',
-      status: 'Pending',
-      paymentMethod: 'Proceed to payment',
-    },
-    {
-      eventName: 'Birthday',
-      price: 10000,
-      date: '15/02/2024',
-      time: '07:00 PM',
-      status: 'Approved',
-      paymentMethod: null,
-    },
-  ];
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchBookings = async () => {
+    try {
+      const response = await getUserBookings();
+      setBookings(response.data.data);
+      console.log(response.data);
+
+
+      setLoading(false);
+    } catch (error) {
+      setError('Failed to fetch bookings');
+      setLoading(false);
+    }
+  }
+  useEffect(() => {
+    fetchBookings();
+  }, []);
+
+  // Debugging to check if bookings are updated
+  useEffect(() => {
+    console.log('Updated bookings:', bookings);
+  }, [bookings]);
+
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div>
@@ -48,22 +52,18 @@ const MyBookings = () => {
               </tr>
             </thead>
             <tbody>
-              {bookings.map((booking, index) => (
+              {bookings.map((data) => (
                 <tr
-                  key={index}
-                  className={`${
-                    index % 2 === 0 ? 'bg-white' : 'bg-gray-100'
-                  } hover:bg-gray-200`}
-                >
-                  <td className="px-4 py-2">{booking.eventName}</td>
-                  <td className="px-4 py-2">Rs {booking.price}</td>
-                  <td className="px-4 py-2">{booking.date}</td>
-                  <td className="px-4 py-2">{booking.time}</td>
-                  <td className="px-4 py-2">{booking.status}</td>
+                  key={data._id}>
+                  <td className="px-4 py-2">{data.eventType}</td>
+                  <td className="px-4 py-2">Rs {data.totalCost}</td>
+                  <td className="px-4 py-2">{data.date}</td>
+                  <td className="px-4 py-2">{data.time}</td>
+                  <td className="px-4 py-2">{data.status}</td>
                   <td className="px-4 py-2">
-                    {booking.paymentMethod ? (
+                    {data.paymentMethod ? (
                       <button className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition">
-                        {booking.paymentMethod}
+                        {data.paymentMethod}
                       </button>
                     ) : (
                       '-'

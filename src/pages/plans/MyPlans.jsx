@@ -120,6 +120,11 @@ const MyPlans = () => {
       {isBookingModalOpen && (
         <BookingForm
           onClose={() => setIsBookingModalOpen(false)}
+          initialData={{price: totalCost, name:user.name, email:user.email}}
+          onBookingCreated={(newBooking) => {
+            console.log("Booking created:", newBooking);
+            setPlans([]);
+          }}
         />
       )}
     </div>
