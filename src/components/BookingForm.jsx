@@ -1,136 +1,90 @@
-import React, { useState } from 'react';
+import React from 'react'
 
-const BookingForm = ({ onClose, onSubmit }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    date: '',
-    time: '',
-    eventType: '',
-    eventPrice: '',
-  });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
-
+const BookingForm = () => {
   return (
-    <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-gray-800">Book Your Event</h3>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-800">
-            ×
-          </button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white w-96 rounded-lg shadow-lg p-6 relative overflow-hidden"
+        style={{ marginTop: "5rem" }}>
+        <button
+          className="absolute top-3 right-3 text-gray-500 hover:text-black"
+          onClick={() => console.log("Close modal")}
+        >
+          &#x2715;
+        </button>
+
+        <h2 className="text-lg font-medium text-primary mb-2">Book your event</h2>
+
+        <div className="text-right text-red-500 font-medium text-sm mb-4">
+          Price:
         </div>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Name</label>
+
+        <form className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
             <input
               type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              className="border rounded-md p-2 w-full"
-              placeholder="Your Name"
-              required
+              className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Enter your name"
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input
               type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              className="border rounded-md p-2 w-full"
-              placeholder="Your Email"
-              required
+              className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Enter your email"
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Phone Number</label>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Phone number</label>
             <input
               type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleInputChange}
-              className="border rounded-md p-2 w-full"
-              placeholder="Your Phone Number"
-              required
+              className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Enter your phone number"
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Date</label>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
             <input
               type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleInputChange}
-              className="border rounded-md p-2 w-full"
-              required
+              className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Time</label>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
             <input
               type="time"
-              name="time"
-              value={formData.time}
-              onChange={handleInputChange}
-              className="border rounded-md p-2 w-full"
-              required
+              className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Select Event Type</label>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Select event type</label>
             <select
-              name="eventType"
-              value={formData.eventType}
-              onChange={handleInputChange}
-              className="border rounded-md p-2 w-full"
-              required
+              className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
-              <option value="">Select event type</option>
-              <option value="Anniversary">Anniversary</option>
-              <option value="Corporate">Corporate</option>
-              <option value="Engagement">Engagement</option>
-              <option value="Mehendi">Mehendi</option>
-              <option value="Reception">Reception</option>
-              <option value="Wedding">Wedding</option>
+              <option value="Balloon">Balloon</option>
+              <option value="Entrance">Entrance</option>
+              <option value="Mandap">Mandap</option>
+              <option value="Passage">Passage</option>
+              <option value="Stage">Stage</option>
             </select>
           </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Event Price</label>
-            <input
-              type="number"
-              name="eventPrice"
-              value={formData.eventPrice}
-              onChange={handleInputChange}
-              className="border rounded-md p-2 w-full"
-              placeholder="Event Price"
-              required
-            />
-          </div>
-          <div className="mt-4">
-            <button
-              type="submit"
-              className="bg-primary text-white px-4 py-2 rounded-md w-full hover:bg-primary transition"
-            >
-              BOOK
-            </button>
-          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-primary text-white rounded-md py-2 hover:bg-gray-800"
+          >
+            BOOK
+          </button>
         </form>
       </div>
     </div>
   );
 };
 
-export default BookingForm;
+export default BookingForm

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Navbar from '../../components/Navbar';
-import Footer from '../../components/Footer';
 import { MdDelete } from "react-icons/md";
-import { getPlansApi, removeFromPlansApi } from '../../apis/Api';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { getPlansApi, removeFromPlansApi } from '../../apis/Api';
+import BookingForm from '../../components/BookingForm';
+import Footer from '../../components/Footer';
+import Navbar from '../../components/Navbar';
 
 
 const MyPlans = () => {
@@ -12,7 +13,8 @@ const MyPlans = () => {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
- 
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+
   useEffect(() => {
     const fetchPlans = async () => {
       try {
@@ -37,7 +39,7 @@ const MyPlans = () => {
       toast.success("Failed to delete plan");
     }
   }
-  
+
   if (loading) return <div>Loading...</div>
   if (error) return <div>{error}</div>
 
@@ -49,13 +51,15 @@ const MyPlans = () => {
 
         {/* Plans Section */}
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 font-poppins">
-        {plans.length > 0 ? (
+          {plans.length > 0 ? (
             plans.map((plan) => (
+              console.log("plkjhrekjan", plan),
               <div
                 key={plan._id}
                 className="border rounded-lg shadow-md overflow-hidden relative"
               >
                 {/* Image */}
+
                 <img
                   src={plan.event.eventImage}
                   className="w-full h-48 object-cover"
@@ -103,11 +107,21 @@ const MyPlans = () => {
           <p className="text-3xl font-bold">Rs {totalCost}</p>
         </div>
         {/* Book Now Button */}
-        <button className="w-full mt-4 py-3 bg-primary text-white font-bold rounded-md hover:bg-primary-dark mb-4">
+        <button
+          className="w-full mt-4 py-3 bg-primary text-white font-bold rounded-md hover:bg-primary-dark mb-4"
+          onClick={() => setIsBookingModalOpen(true)}
+        >
           BOOK NOW
         </button>
       </div>
       <Footer />
+
+      {/* Booking Modal */}
+      {isBookingModalOpen && (
+        <BookingForm
+          onClose={() => setIsBookingModalOpen(false)}
+        />
+      )}
     </div>
   );
 };
