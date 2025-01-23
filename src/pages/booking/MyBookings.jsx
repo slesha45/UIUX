@@ -12,9 +12,6 @@ const MyBookings = () => {
     try {
       const response = await getUserBookings();
       setBookings(response.data.data);
-      console.log(response.data);
-
-
       setLoading(false);
     } catch (error) {
       setError('Failed to fetch bookings');
@@ -24,6 +21,11 @@ const MyBookings = () => {
   useEffect(() => {
     fetchBookings();
   }, []);
+
+  const formatDate = (isoDate) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(isoDate).toLocaleDateString(undefined, options);
+  }
 
   // Debugging to check if bookings are updated
   useEffect(() => {
@@ -56,8 +58,8 @@ const MyBookings = () => {
                 <tr
                   key={data._id}>
                   <td className="px-4 py-2">{data.eventType}</td>
-                  <td className="px-4 py-2">Rs {data.totalCost}</td>
-                  <td className="px-4 py-2">{data.date}</td>
+                  <td className="px-4 py-2">Rs {data.totalPrice}</td>
+                  <td className="px-4 py-2">{formatDate(data.date)}</td>
                   <td className="px-4 py-2">{data.time}</td>
                   <td className="px-4 py-2">{data.status}</td>
                   <td className="px-4 py-2">

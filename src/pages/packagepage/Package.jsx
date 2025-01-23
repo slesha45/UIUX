@@ -40,7 +40,7 @@ const Package = () => {
                 title={pkg.packageTitle}
                 description={pkg.packageDescription}
                 price={`Rs ${pkg.packagePrice}`}
-                imageUrl={`http://localhost:5000/packageMain/${pkg.packageImage}`}
+                imageUrl={`http://localhost:5000/public/packageMain/${pkg.packageImage}`}
                 backgroundColor={backgroundColors[index % backgroundColors.length]} // Dynamic background color
               />
             ))

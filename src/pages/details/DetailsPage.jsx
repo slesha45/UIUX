@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { FaStar, FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaStar } from "react-icons/fa";
+import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
-  getSingleEvent,
-  getReviewsApi,
-  addToWishlistApi,
-  removeFromWishlistApi,
   addReviewApi,
   addToPlansApi,
+  addToWishlistApi,
+  getReviewsApi,
+  getSingleEvent,
+  removeFromWishlistApi,
 } from "../../apis/Api";
-import { useParams } from "react-router-dom";
-import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import { toast } from "react-toastify";
+import Navbar from "../../components/Navbar";
 
 const DetailsPage = () => {
   const { id } = useParams();
@@ -22,30 +22,36 @@ const DetailsPage = () => {
   const [comment, setComment] = useState("");
 
   // Fetch event details and reviews
-  useEffect(() => {
-    const fetchEventDetails = async () => {
-      try {
-        const eventResponse = await getSingleEvent(id);
-        if (eventResponse.data.success) {
-          setEvent(eventResponse.data.Event);
-        }
 
-        const reviewResponse = await getReviewsApi(id);
-        if (reviewResponse.data.success) {
-          setReviews(reviewResponse.data.reviews);
-        }
-      } catch (error) {
-        console.error("Failed to fetch event details or reviews:", error);
+  const fetchEventDetails = async () => {
+    try {
+      const eventResponse = await getSingleEvent(id);
+      if (eventResponse.data.success) {
+        setEvent(eventResponse.data.Event);
+      } else {
+        toast.error("Failed to fetch event details.");
       }
-    };
 
+      const reviewResponse = await getReviewsApi(id);
+      if (reviewResponse.data.success) {
+        setReviews(reviewResponse.data.reviews);
+        console.log(reviewResponse.data.reviews);
+      } else {
+        toast.error("Failed to fetch reviews");
+      }
+    } catch (error) {
+      console.error("Failed to fetch event details or reviews:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchEventDetails();
   }, [id]);
 
   useEffect(() => {
-    const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-    if (wishlist.includes(event?.id)) {
-      setIsWishlisted(true);
+    if (event) {
+      const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+      setIsWishlisted(wishlist.includes(event._id));
     }
   }, [event]);
 
@@ -126,7 +132,7 @@ const DetailsPage = () => {
 
   return (
     <>
-      <Navbar/>
+      <Navbar />
       <div className="container mx-auto p-6 font-poppins">
         {/* Event Header */}
         <div className="flex flex-col md:flex-row gap-6">
@@ -175,61 +181,57 @@ const DetailsPage = () => {
         {/* Reviews and Ratings Section */}
         <div className="mt-10">
           <h2 className="text-xl font-semibold mb-4">Reviews and Ratings</h2>
-
-
-          {/* Fetch and Display Reviews */}
-          {reviews && reviews.length > 0 ? (
-            reviews.map((review, index) => (
-              <div key={index} className="mb-6 border-b pb-4">
-                <div className="flex items-center gap-1 mb-2">
-                  {/* Render filled stars for rating */}
-                  {Array.from({ length: review.rating }, (_, i) => (
-                    <FaStar key={i} className="text-yellow-500" />
-                  ))}
-                  {/* Render empty stars for remaining */}
-                  {Array.from({ length: 5 - review.rating }, (_, i) => (
-                    <FaStar key={i} className="text-gray-300" />
-                  ))}
+          <div className="reviews mt-6">
+            <h5 className="text-base font-semibold mb-4">User's Reviews:</h5>
+            {reviews.length > 0 ? (
+              reviews.map((review) => (
+                <div key={review._id} className="bg-white p-4 rounded shadow-md mb-4">
+                  <h4 className="font-semibold">{review.userId?.fullName || "Anonymous"}</h4>
+                  <div className="flex items-center mb-2">
+                    {[...Array(review.rating)].map((_, i) => (
+                      <FaStar key={i} className="text-yellow-500" />
+                    ))}
+                  </div>
+                  <p className="text-gray-700">{review.comment}</p>
+                  <span className="text-sm text-gray-500">{new Date(review.createdAt).toLocaleString()}</span>
                 </div>
-                <p className="text-gray-800">{review.comment}</p>
-                <p className="text-sm text-gray-500 mt-1">
-                  Reviewed by: {review.user?.name || "Anonymous"}
-                </p>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-600">No reviews yet.</p>
-          )}
-
-          {/* Add New Review */}
-          <div className="mt-6 bg-gray-50 p-6 rounded-lg shadow-md">
-            <h3 className="text-lg font-semibold mb-4">Add a Review</h3>
-            <div className="flex items-center gap-2 mb-4">
-              {/* Rating Stars */}
-              {[1, 2, 3, 4, 5].map((star) => (
-                <FaStar
-                  key={star}
-                  className={`cursor-pointer ${star <= rating ? "text-yellow-500" : "text-gray-300"}`}
-                  onClick={() => setRating(star)}
-                />
-              ))}
-            </div>
-            <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded mb-4"
-              rows="4"
-              placeholder="Write your review"
-            />
-            <button
-              onClick={handleAddReview}
-              className="bg-primary text-white py-2 px-6 rounded hover:bg-secondary-dark"
-            >
-              Submit Review
-            </button>
+              ))
+            ) : (
+              <p className="text-gray-500">No reviews yet.</p>
+            )}
           </div>
         </div>
+
+
+        {/* Add New Review */}
+        <div className="mt-6 bg-gray-50 p-6 rounded-lg shadow-md">
+          <h3 className="text-lg font-semibold mb-4">Add a Review</h3>
+          <div className="flex items-center gap-2 mb-4">
+            {/* Rating Stars */}
+            {[1, 2, 3, 4, 5].map((star) => (
+              <FaStar
+                key={star}
+                className={`cursor-pointer ${star <= rating ? "text-yellow-500" : "text-gray-300"}`}
+                onClick={() => setRating(star)}
+              />
+            ))}
+          </div>
+          <textarea
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded mb-4"
+            rows="4"
+            placeholder="Write your review"
+          />
+          <button
+            onClick={handleAddReview}
+            className="bg-primary text-white py-2 px-6 rounded hover:bg-secondary-dark"
+          >
+            Submit Review
+          </button>
+        </div>
       </div>
+
       <Footer />
     </>
   );

@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { createBooking } from '../apis/Api';
 
-const BookingForm = ({ onClose, initialData = {}, onBookingCreated }) => {
+const BookingForm = ({ onClose, onBookingCreated, initialData }) => {
   const [formData, setFormData] = useState({
-    name: initialData.name || '',
-    email: initialData.email || '',
+    name: '',
+    email: '',
     phone: '',
     date: '',
     time: '',
@@ -20,7 +20,8 @@ const BookingForm = ({ onClose, initialData = {}, onBookingCreated }) => {
     try {
       const response = await createBooking({
         ...formData,
-        price: initialData.price,
+        planId: initialData.planId, // Add planId
+        totalPrice: initialData.price,
       });
       onBookingCreated(response.data.booking);
       onClose();
@@ -110,11 +111,13 @@ const BookingForm = ({ onClose, initialData = {}, onBookingCreated }) => {
               onChange={handleChange}
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
-              <option value="Balloon">Balloon</option>
-              <option value="Entrance">Entrance</option>
-              <option value="Mandap">Mandap</option>
-              <option value="Passage">Passage</option>
-              <option value="Stage">Stage</option>
+              <option value="Anniversary">Anniversary</option>
+              <option value="Birthday">Birthday</option>
+              <option value="Corporate">Corporate</option>
+              <option value="Engagement">Engagement</option>
+              <option value="Mehendi">Mehendi</option>
+              <option value="Reception">Reception</option>
+              <option value="Wedding">Wedding</option>
             </select>
           </div>
 

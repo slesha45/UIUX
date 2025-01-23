@@ -53,21 +53,24 @@ const MyProfile = () => {
   const handleUpdateClick = async () => {
     try {
       const { name, email, currentPassword, newPassword } = formData;
-  
+
       const updateData = { fullName: name, email };
       if (currentPassword && newPassword) {
-        updateData.password = newPassword; // Include only the new password
+        updateData.currentPassword = currentPassword;
+        updateData.newPassword = newPassword;
       }
-  
-      await updateUserProfileApi(updateData);
-      toast.success('Profile updated successfully');
-      setIsEditing(false);
+
+      const response = await updateUserProfileApi(updateData);
+      if (response.data) {
+        toast.success('Profile updated successfully');
+        setIsEditing(false);
+      }
     } catch (error) {
       toast.error('Failed to update profile');
     }
   };
 
-  if (isLoading){
+  if (isLoading) {
     return (
       <div className="text-center py-8">
         <h1 className="text-2xl font-bold">Loading Profile...</h1>

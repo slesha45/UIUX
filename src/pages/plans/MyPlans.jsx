@@ -53,7 +53,7 @@ const MyPlans = () => {
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 font-poppins">
           {plans.length > 0 ? (
             plans.map((plan) => (
-              console.log("plkjhrekjan", plan),
+              console.log("plan", plan),
               <div
                 key={plan._id}
                 className="border rounded-lg shadow-md overflow-hidden relative"
@@ -61,7 +61,7 @@ const MyPlans = () => {
                 {/* Image */}
 
                 <img
-                  src={plan.event.eventImage}
+                  src={`http://localhost:5000/public/eventMain/${plan.event.eventImage}`}
                   className="w-full h-48 object-cover"
                 />
                 {/* Details */}
@@ -120,7 +120,7 @@ const MyPlans = () => {
       {isBookingModalOpen && (
         <BookingForm
           onClose={() => setIsBookingModalOpen(false)}
-          initialData={{price: totalCost, name:user.name, email:user.email}}
+          initialData={{ price: totalCost, planId: plans[0]?._id }}
           onBookingCreated={(newBooking) => {
             console.log("Booking created:", newBooking);
             setPlans([]);

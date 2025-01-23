@@ -39,7 +39,7 @@ export const updateEvent = (id, data) => Api.put(`/api/event/update_event/${id}`
 
 //Get user profile Api
 export const getUserProfileApi = () => Api.get('/api/user/profile', config)
-export const updateUserProfileApi = (data) => Api.put('/api/user/profile', data, config)
+export const updateUserProfileApi = (updateData) => Api.put('/api/user/profile', updateData, config)
 
 // pagination
 export const eventPagination = (
@@ -72,7 +72,7 @@ export const updatePaymentMethod = (paymentData) => Api.put('/api/booking/update
 export const createContact = (data) => Api.post('/api/contact/contact', data, config);
 export const getAllContacts = () => Api.get('/api/contact/all', config);
 
-export const addReviewApi = (eventId, reviewData) => Api.post('/api/review/add',{ eventId, ...reviewData }, config);
+export const addReviewApi = (eventId, reviewData) => Api.post(`/api/review/add`,{ eventId, ...reviewData }, config);
 export const getReviewsApi = (eventId) => Api.get(`/api/review/event/${eventId}`);
 
 export const addToPlansApi = (eventId) => Api.post('/api/plan/add', { eventId }, config);
