@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getUserBookings } from '../../apis/Api';
+import { getUserBookings, updatePaymentMethod } from '../../apis/Api';
 import Footer from '../../components/Footer';
 import Navbar from '../../components/Navbar';
 
@@ -27,11 +27,18 @@ const MyBookings = () => {
     return new Date(isoDate).toLocaleDateString(undefined, options);
   }
 
-  // Debugging to check if bookings are updated
-  useEffect(() => {
-    console.log('Updated bookings:', bookings);
-  }, [bookings]);
-
+  const handlePaymentMethod = async (bookingId, method) => {
+    try {
+      await updatePaymentMethod({bookingId, paymentMethod: method});
+      setBookings((prevBookings) =>
+        prevBookings.map((b) =>
+          b._id === bookingId ? { ...b, paymentMethod: method } : b
+        )
+      );
+    } catch (error) {
+      console.error("Error updating payment method:", error);
+    }
+  }
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -64,11 +71,26 @@ const MyBookings = () => {
                   <td className="px-4 py-2">{data.status}</td>
                   <td className="px-4 py-2">
                     {data.paymentMethod ? (
-                      <button className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition">
+                      // If already chosen, display the chosen payment method
+                      <button className="bg-primary text-white px-4 py-2 rounded-md">
                         {data.paymentMethod}
                       </button>
                     ) : (
-                      '-'
+                      // If not chosen yet, allow user to pick
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handlePaymentMethod(data._id, 'cod')}
+                          className="bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700 transition"
+                        >
+                          Pay on Arrival
+                        </button>
+                        {/* <button
+                          onClick={() => handlePaymentMethod(data._id, 'khalti')}
+                          className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition"
+                        >
+                          Online Payment
+                        </button> */}
+                      </div>
                     )}
                   </td>
                 </tr>

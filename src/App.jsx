@@ -1,4 +1,8 @@
+import React from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import AdminDashboard from './pages/admin/AdminDashboard';
 import ContactMessages from './pages/admin/ContactMessages';
 import ManageBookings from './pages/admin/ManageBookings';
@@ -20,32 +24,44 @@ import MyWishlist from './pages/wishlist/MyWishlist';
 import AdminRoute from './protected_routes/AdminRoute';
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path='/' element={<Homepage />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
-        <Route path='/packages' element={<Package />} />
-        <Route path='/plans' element={<MyPlans />} />
-        <Route path='/bookings' element={<MyBookings />} />
-        <Route path='/contact' element={<ContactUs />} />
-        <Route path='/works' element={<HowItWorks />} />
-        <Route path='/wishlist' element={<MyWishlist />} />
-        <Route path='/profile' element={<MyProfile />} />
-        <Route path='/details/:id' element={<DetailsPage />} />
-        <Route path='/forgot-password' element={<ForgotPassword />} />
+    <React.Fragment>
+      <Router>
+        <Routes>
+          <Route path='/' element={<Homepage />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
+          <Route path='/packages' element={<Package />} />
+          <Route path='/plans' element={<MyPlans />} />
+          <Route path='/bookings' element={<MyBookings />} />
+          <Route path='/contact' element={<ContactUs />} />
+          <Route path='/works' element={<HowItWorks />} />
+          <Route path='/wishlist' element={<MyWishlist />} />
+          <Route path='/profile' element={<MyProfile />} />
+          <Route path='/details/:id' element={<DetailsPage />} />
+          <Route path='/forgot-password' element={<ForgotPassword />} />
 
-        {/* Admin Routes */}
-        <Route element={<AdminRoute />}>
-          <Route path='/admin/dashboard' element={<AdminDashboard />} />
-          <Route path='/admin/dashboard/update/:id' element={<UpdateEvent />} />
-          <Route path='/admin/bookings' element={<ManageBookings />} />
-          <Route path='/admin/users' element={<ManageUsers />} />
-          <Route path='/admin/contact' element={<ContactMessages />} />
-          <Route path='/admin/decorations' element={<ManageDecorations />} />
-        </Route>
-      </Routes>
-    </Router>
+          {/* Admin Routes */}
+          <Route element={<AdminRoute />}>
+            <Route path='/admin/dashboard' element={<AdminDashboard />} />
+            <Route path='/admin/dashboard/update/:id' element={<UpdateEvent />} />
+            <Route path='/admin/bookings' element={<ManageBookings />} />
+            <Route path='/admin/users' element={<ManageUsers />} />
+            <Route path='/admin/contact' element={<ContactMessages />} />
+            <Route path='/admin/decorations' element={<ManageDecorations />} />
+          </Route>
+        </Routes>
+      </Router>
+
+      <ToastContainer
+        position='top-center'
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        draggable
+        pauseOnHover
+      />
+    </React.Fragment>
   )
 }
 

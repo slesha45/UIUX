@@ -65,7 +65,7 @@ export const removeFromWishlistApi = (eventId) => Api.delete( `api/wishlist/remo
 //bookings
 export const getAllBookings = () => Api.get('/api/booking/all-bookings', config)
 export const createBooking = (bookingData) => Api.post('/api/booking/create', bookingData, config);
-export const updateBookingStatus = (updateData) => Api.put('/api/booking/bookings-status', updateData, config)
+export const updateBookingStatus = (updateData) => Api.put('/api/booking/update-status', updateData, config)
 export const getUserBookings = () => Api.get('/api/booking/mybookings', config); 
 export const updatePaymentMethod = (paymentData) => Api.put('/api/booking/update-payment', paymentData, config)
 
@@ -82,3 +82,13 @@ export const removeFromPlansApi = (eventId) => Api.delete(`/api/plan/remove/${ev
 export const createPackageApi = (data) => Api.post('/api/package/create', data)
 export const getAllPackage = () => Api.get('/api/package/get_all_package', config)
 export const deletePackage = (id) => Api.delete(`/api/pacakge/delete_package/${id}`, config)
+
+export const createNotificationApi = (data) => 
+  Api.post('/api/notification/create', data, config);
+export const getUserNotificationsApi = () => 
+  Api.get('/api/notification/all', config);
+export const markNotificationAsReadApi = (notificationId) => 
+  Api.put(`/api/notification/${notificationId}/read`, {}, config);
+export const deleteNotificationApi = (notificationId) => 
+  Api.delete(`/api/notification/${notificationId}`, config);
+

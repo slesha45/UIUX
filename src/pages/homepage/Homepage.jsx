@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import Navbar from '../../components/Navbar';
-import Footer from '../../components/Footer';
+import React, { useEffect, useState } from 'react';
+import { CiSearch } from "react-icons/ci";
+import { Range } from 'react-range';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import { CiSearch } from "react-icons/ci";
-import EventCard from '../../components/EventCard';
-import { Range } from 'react-range';
 import { getAllEvent } from '../../apis/Api'; // Ensure the API is imported
+import EventCard from '../../components/EventCard';
+import Footer from '../../components/Footer';
+import Navbar from '../../components/Navbar';
 
 const STEP = 1000;
 const MIN = 1000;
@@ -43,34 +43,34 @@ const Homepage = () => {
       <Navbar />
 
       {/* Carousel Section */}
-      <div className="mt-4">
+      <div >
         <Carousel
           showThumbs={false}
           autoPlay
           infiniteLoop
           showStatus={false}
           interval={3000}
-          className="w-full max-w-7xl mx-auto"
+          className="w-full"
         >
           <div>
             <img
-              src="path_to_your_image1.jpg"
+              src="caro1.jpg"
               alt="Decoration 1"
-              className="rounded-s object-cover h-1/2 w-full"
+              className="object-cover w-full h-full"
             />
           </div>
           <div>
             <img
-              src="path_to_your_image2.jpg"
+              src="caro2.jpg"
               alt="Decoration 2"
-              className="rounded-s object-cover h-1/2 w-full"
+              className="object-cover w-full h-full"
             />
           </div>
           <div>
             <img
-              src="path_to_your_image3.jpg"
+              src="caro3.jpg"
               alt="Decoration 3"
-              className="rounded-s object-cover h-1/2 w-full"
+              className="object-cover w-full h-full"
             />
           </div>
         </Carousel>
@@ -114,7 +114,8 @@ const Homepage = () => {
                     {...props}
                     className="h-1 bg-gray-300 rounded relative"
                     style={{
-                      background: `linear-gradient(to right, #FFD699 ${((values[0] - MIN) / (MAX - MIN)) * 100}%, #1CB822 ${((values[0] - MIN) / (MAX - MIN)) * 100}% ${((values[1] - MIN) / (MAX - MIN)) * 100}%, #FFD699 ${((values[1] - MIN) / (MAX - MIN)) * 100}%)`,
+                      background: `linear-gradient(to right, #FFD699 ${((values[0] - MIN) / (MAX - MIN)) * 100}%, #6699CE
+ ${((values[0] - MIN) / (MAX - MIN)) * 100}% ${((values[1] - MIN) / (MAX - MIN)) * 100}%, #FFD699 ${((values[1] - MIN) / (MAX - MIN)) * 100}%)`,
                     }}
                   >
                     {children}

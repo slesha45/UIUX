@@ -11,7 +11,6 @@ const ManageBookings = () => {
     const fetchBookings = async () => {
       try {
         const response = await getAllBookings();
-        console.log(response.data);
         setBookings(response.data.data);
       } catch (error) {
         console.error("Error fetching bookings:", error);
@@ -26,16 +25,31 @@ const ManageBookings = () => {
 
   const handleApprove = async (bookingId) => {
     try {
-      await updateBookingStatus({ bookingId, status: "approved" });
+      await updateBookingStatus({ bookingId, status: "confirmed" });
       const updatedBookings = bookings.map((booking) =>
-        booking._id === bookingId ? { ...booking, status: "approved" } : booking
+        booking._id === bookingId ? { ...booking, status: "confirmed" } : booking
       );
       setBookings(updatedBookings);
+      toast.success("Booking approved successfully");
     } catch (error) {
       console.error("Error approving booking:", error);
       toast.error("Failed to approve booking.");
     }
   };
+
+  const handleReject = async (bookingId) => {
+    try {
+      await updateBookingStatus({ bookingId, status: "cancelled" });
+      const updatedBookings = bookings.map((booking) =>
+        booking._id === bookingId ? { ...booking, status: "cancelled" } : booking
+      );
+      setBookings(updatedBookings);
+      toast.success("Booking rejected (cancelled) successfully");
+    } catch (error) {
+      console.error("Error rejecting booking:", error);
+      toast.error("Failed to reject booking.");
+    }
+  }
 
   return (
     <div className="flex">
@@ -74,7 +88,7 @@ const ManageBookings = () => {
                         {booking.user?.fullName}
                       </td>
                       <td className="px-4 py-2 border border-gray-300">
-                        {booking.event?.eventTitle}
+                        {booking.plan?.event?.eventTitle}
                       </td>
                       <td className="px-4 py-2 border border-gray-300">
                         {new Date(booking.date).toLocaleDateString()}
@@ -89,13 +103,22 @@ const ManageBookings = () => {
                         {booking.paymentMethod}
                       </td>
                       <td className="px-4 py-2 border border-gray-300 text-center">
-                        {booking.status === "pending" && (
-                          <button
-                            className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
-                            onClick={() => handleApprove(booking._id)}
-                          >
-                            Approve
-                          </button>
+                         {/* Show approve/reject only if it's still pending */}
+                         {booking.status === "pending" && (
+                          <div className="flex gap-2">
+                            <button
+                              className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
+                              onClick={() => handleApprove(booking._id)}
+                            >
+                              Approve
+                            </button>
+                            <button
+                              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                              onClick={() => handleReject(booking._id)}
+                            >
+                              Reject
+                            </button>
+                          </div>
                         )}
                       </td>
                     </tr>

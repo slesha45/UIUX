@@ -1,18 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiMenu, FiX } from "react-icons/fi";
 import { CiUser } from "react-icons/ci";
 import { CiHeart } from "react-icons/ci";
 import { IoIosNotificationsOutline } from "react-icons/io";
+import { getUserNotificationsApi } from "../apis/Api";
 
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
+
   const isActive = (path) => window.location.pathname === path;
 
-  const user = JSON.parse(localStorage.getItem('user'))
+  const user= JSON.parse(localStorage.getItem('user'))
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (user) {
+      fetchNotifications();
+    }
+  }, [user]);
+
+  const fetchNotifications = async () => {
+    try {
+      const response = await getUserNotificationsApi();
+      setNotifications(response.data.data || []);
+    } catch (error) {
+      console.error("Failed to fetch notifications:", error);
+    }
+  };
+
+  // Count how many are unread
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   const handleLogout = () => {
     localStorage.removeItem('user')
@@ -20,6 +42,14 @@ const Navbar = () => {
     navigate('/')
     window.dispatchEvent(new Event('storage'))
   }
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const toggleNotificationDropdown = () => {
+    setShowNotificationDropdown(!showNotificationDropdown);
+  };
 
   return (
     <div className="sticky top-0 z-[60] w-full font-poppins text-base">
@@ -70,11 +100,38 @@ const Navbar = () => {
           </nav>
 
           <div className="flex items-center space-x-2 md:space-x-4 flex-shrink-0">
-          <Link to="/notification">
-              <button className="text-gray-600 hover:text-black">
-                <IoIosNotificationsOutline className="text-xl" />
+          {user && (
+              <button
+                onClick={toggleNotificationDropdown}
+                className="relative text-gray-600 hover:text-black"
+              >
+                <IoIosNotificationsOutline className="text-lg" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1.5 -right-2 bg-red-500 text-white text-xs px-1 rounded-full">
+                    {unreadCount}
+                  </span>
+                )}
               </button>
-            </Link>
+            )}
+            {/* Notification Dropdown */}
+            {showNotificationDropdown && (
+              <div className="absolute top-10 right-0 mt-2 w-72 bg-white border rounded-lg shadow-lg p-2 z-50 max-h-80 overflow-auto">
+                {notifications.length === 0 ? (
+                  <p className="text-sm text-gray-500">No notifications</p>
+                ) : (
+                  notifications.map((notif) => (
+                    <div
+                      key={notif._id}
+                      className={`p-2 mb-1 rounded hover:bg-gray-100 cursor-pointer ${
+                        notif.read ? "text-gray-600" : "font-semibold"
+                      }`}
+                    >
+                      {notif.message}
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
             <Link to="/wishlist">
               <button className="text-gray-600 hover:text-black">
                 <CiHeart className="text-xl" />
