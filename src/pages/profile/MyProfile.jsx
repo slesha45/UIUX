@@ -81,7 +81,7 @@ const MyProfile = () => {
   return (
     <div>
       <Navbar />
-      <div className="container mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 mt-8">
         <h1 className="text-5xl font-jacques mb-6">My Profile</h1>
         <div className="max-w-md mx-auto border rounded-lg shadow-md p-6 font-poppins">
           <h2 className="text-xl font-semibold mb-4">Personal Details:</h2>

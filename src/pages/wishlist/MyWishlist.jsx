@@ -45,7 +45,7 @@ const MyWishlist = () => {
   return (
     <div>
       <Navbar />
-      <div className="container mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 mt-8">
         <h1 className="text-5xl font-jacques mb-6">My Wishlist</h1>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         {wishlist.length === 0 ? (
@@ -53,7 +53,7 @@ const MyWishlist = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 font-poppins">
             {wishlist.map((event) => (
-              <div key={event._id} className="border rounded-lg shadow-sm hover:shadow-lg overflow-hidden">
+              <div key={event._id} className="border rounded-lg shadow-sm hover:shadow-lg overflow-hidden mb-6">
                 <img
                   src={`http://localhost:5000/public/eventMain/${event.eventImage}`}
                   alt={event.eventTitle}

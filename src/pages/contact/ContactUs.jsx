@@ -15,18 +15,59 @@ const ContactUs = () => {
     message: '',
   });
 
+  const [errors, setErrors] = useState({});
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" });
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = "First name is required.";
+    }
+
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = "Last name is required.";
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required.";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Invalid email format.";
+    }
+
+    if (!formData.message.trim()) {
+      newErrors.message = "Message cannot be empty.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Return true if no errors
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      toast.error("Please correct the errors in the form.");
+      return;
+    }
+
     try {
-      const response = await axios.post('http://localhost:5000/api/contact/contact', formData);
-      toast.success(response.data.message || 'Message submitted successfully');
-      setFormData({ firstName: '', lastName: '', email: '', message: '' });
+      const response = await axios.post(
+        "http://localhost:5000/api/contact/contact",
+        formData
+      );
+      toast.success(response.data.message || "Message submitted successfully");
+      setFormData({ firstName: "", lastName: "", email: "", message: "" });
+      setErrors({}); // Clear errors on successful submission
     } catch (error) {
-      toast.error((error.response && error.response.data && error.response.data.message) || 'Error submitting form');
+      toast.error(
+        (error.response && error.response.data && error.response.data.message) ||
+        "Error submitting form"
+      );
     }
   };
 
@@ -34,7 +75,7 @@ const ContactUs = () => {
     <div>
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 mt-8">
-        <h1 className="text-5xl font-bold mb-6">Contact Us</h1>
+        <h1 className="text-5xl font-jacques mb-6">Contact Us</h1>
         <p className="text-gray-400 mb-6">
           We are available 24/7 for you. Feel free to reach out to us.
         </p>
@@ -45,84 +86,105 @@ const ContactUs = () => {
           <div className="w-full lg:w-2/5">
             <form
               onSubmit={handleSubmit}
-              className="space-y-6 bg-white p-6 rounded shadow-md"
+              className="space-y-4 bg-white p-4 rounded shadow-md"
+              aria-label="Contact Us Form"
             >
               {/* First Name */}
-              <div className="relative">
-                <input
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  className="peer w-full p-3 border border-gray-300 rounded focus:border-primary focus:ring-1 focus:ring-primary outline-none"
-                  placeholder=" "
-                  required
-                />
+              <div>
                 <label
-                  className="absolute left-3 top-3 text-gray-500 peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs peer-focus:text-primary transition-all"
+                  htmlFor="firstName"
+                  className="block text-sm font-medium text-gray-700 mb-1"
                 >
                   First Name
                 </label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  className={`w-full p-2 border ${errors.firstName ? "border-red-500" : "border-gray-300"
+                    } rounded focus:border-primary focus:ring-2 focus:ring-primary outline-none text-sm`}
+                  aria-required="true"
+                />
+                {errors.firstName && (
+                  <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>
+                )}
               </div>
 
               {/* Last Name */}
-              <div className="relative">
-                <input
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  className="peer w-full p-3 border border-gray-300 rounded focus:border-primary focus:ring-1 focus:ring-primary outline-none"
-                  placeholder=" "
-                  required
-                />
+              <div>
                 <label
-                  className="absolute left-3 top-3 text-gray-500 peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs peer-focus:text-primary transition-all"
+                  htmlFor="lastName"
+                  className="block text-sm font-medium text-gray-700 mb-1"
                 >
                   Last Name
                 </label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  className={`w-full p-2 border ${errors.lastName ? "border-red-500" : "border-gray-300"
+                    } rounded focus:border-primary focus:ring-2 focus:ring-primary outline-none text-sm`}
+                  aria-required="true"
+                />
+                {errors.lastName && (
+                  <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>
+                )}
               </div>
 
               {/* Email */}
-              <div className="relative">
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="peer w-full p-3 border border-gray-300 rounded focus:border-primary focus:ring-1 focus:ring-primary outline-none"
-                  placeholder=" "
-                  required
-                />
+              <div>
                 <label
-                  className="absolute left-3 top-3 text-gray-500 peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs peer-focus:text-primary transition-all"
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-1"
                 >
                   Email
                 </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className={`w-full p-2 border ${errors.email ? "border-red-500" : "border-gray-300"
+                    } rounded focus:border-primary focus:ring-2 focus:ring-primary outline-none text-sm`}
+                  aria-required="true"
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                )}
               </div>
 
               {/* Message */}
-              <div className="relative">
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  rows="4"
-                  className="peer w-full p-3 border border-gray-300 rounded focus:border-primary focus:ring-1 focus:ring-primary outline-none"
-                  placeholder=" "
-                  required
-                ></textarea>
+              <div>
                 <label
-                  className="absolute left-3 top-3 text-gray-500 peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs peer-focus:text-primary transition-all"
+                  htmlFor="message"
+                  className="block text-sm font-medium text-gray-700 mb-1"
                 >
                   Message
                 </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  rows="3"
+                  className={`w-full p-2 border ${errors.message ? "border-red-500" : "border-gray-300"
+                    } rounded focus:border-primary focus:ring-2 focus:ring-primary outline-none text-sm`}
+                  aria-required="true"
+                ></textarea>
+                {errors.message && (
+                  <p className="text-red-500 text-xs mt-1">{errors.message}</p>
+                )}
               </div>
 
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full bg-primary text-white p-3 rounded hover:bg-primary-dark transition"
+                className="w-full bg-primary text-white p-2 rounded hover:bg-primary-dark transition text-sm"
               >
                 Send Message
               </button>
