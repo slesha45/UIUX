@@ -49,7 +49,7 @@ const MyWishlist = () => {
         <h1 className="text-5xl font-jacques mb-6">My Wishlist</h1>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         {wishlist.length === 0 ? (
-          <p>Your wishlist is empty.</p>
+          <p className='mb-40'>Your wishlist is empty.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 font-poppins">
             {wishlist.map((event) => (

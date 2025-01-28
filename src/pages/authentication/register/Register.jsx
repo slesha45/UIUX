@@ -4,6 +4,7 @@ import { FiMail } from 'react-icons/fi'
 import { FaLock, FaLockOpen, FaRegUser } from "react-icons/fa6";
 import { registerUserApi } from '../../../apis/Api';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
 
@@ -16,6 +17,8 @@ const Register = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
+
+  const navigate = useNavigate();
 
   const handleFullName = (e) => {
     setFullName(e.target.value);
@@ -72,9 +75,10 @@ const Register = () => {
     }
     registerUserApi(data).then((res) => {
       if (res.data.success === false) {
-        toast.error(res.data.message);
+        toast.error("User registration failed.");
       } else {
-        toast.success(res.data.message);
+        toast.success("Account created successfully!");
+        navigate("/login")
       }
     }).catch((error) => {
       if (error.response.status === 400) {
@@ -108,7 +112,7 @@ const Register = () => {
                   onChange={handleFullName}
                     type='text'
                     placeholder="Enter full name"
-                    className="flex-1 border-none outline-none text-gray-600"
+                    className="flex-1 border-none focus:outline-none focus:ring-0 text-gray-600"
                   />
                   {fullNameError && <p className="text-red-500 text-xs mt-1">{fullNameError}</p>}
                 </label>
@@ -121,7 +125,7 @@ const Register = () => {
                   onChange={handleEmail}
                     type="email"
                     placeholder="Enter email address"
-                    className="flex-1 border-none outline-none text-gray-600"
+                    className="flex-1 border-none focus:outline-none focus:ring-0 text-gray-600"
                   />
                   {emailError && <p className="text-red-500 text-xs mt-1">{emailError}</p>}
                 </label>
@@ -133,7 +137,7 @@ const Register = () => {
                   onChange={handlePassword}
                     type="password"
                     placeholder="Enter password"
-                    className="flex-1 border-none outline-none text-gray-600"
+                    className="flex-1 border-none focus:outline-none focus:ring-0 text-gray-600"
                   />
                   {passwordError && <p className="text-red-500 text-xs mt-1">{passwordError}</p>}
                 </label>
@@ -145,7 +149,7 @@ const Register = () => {
                   onChange={handleConfirmPassword}
                     type="password"
                     placeholder="Confirm password"
-                    className="flex-1 border-none outline-none text-gray-600"
+                    className="flex-1 border-none focus:outline-none focus:ring-0 text-gray-600"
                   />
                   {confirmPasswordError && <p className="text-red-500 text-xs mt-1">{confirmPasswordError}</p>}
                 </label>

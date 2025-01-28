@@ -83,7 +83,7 @@ const MyProfile = () => {
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 mt-8">
         <h1 className="text-5xl font-jacques mb-6">My Profile</h1>
-        <div className="max-w-md mx-auto border rounded-lg shadow-md p-6 font-poppins">
+        <div className="max-w-md mx-auto border rounded-lg shadow-md p-6 font-poppins mb-4">
           <h2 className="text-xl font-semibold mb-4">Personal Details:</h2>
           <form>
             <div className="mb-4">
