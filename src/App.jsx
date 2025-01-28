@@ -22,6 +22,8 @@ import MyPlans from './pages/plans/MyPlans';
 import MyProfile from './pages/profile/MyProfile';
 import MyWishlist from './pages/wishlist/MyWishlist';
 import AdminRoute from './protected_routes/AdminRoute';
+// import Payment from './pages/payment/Payment';
+// import PaymentSuccess from './pages/payment/PaymentSuccess';
 function App() {
   return (
     <React.Fragment>
@@ -39,6 +41,8 @@ function App() {
           <Route path='/profile' element={<MyProfile />} />
           <Route path='/details/:id' element={<DetailsPage />} />
           <Route path='/forgot-password' element={<ForgotPassword />} />
+          {/* <Route path="/payment" element={<Payment />} />
+          <Route path="/payment/success" element={<PaymentSuccess />}></Route> */}
 
           {/* Admin Routes */}
           <Route element={<AdminRoute />}>

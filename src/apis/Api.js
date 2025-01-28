@@ -92,3 +92,6 @@ export const markNotificationAsReadApi = (notificationId) =>
 export const deleteNotificationApi = (notificationId) => 
   Api.delete(`/api/notification/${notificationId}`, config);
 
+// Khalti
+export const initializeKhaltiPayment = (data) =>
+  Api.post("/api/payment/initialize_khalti", data);

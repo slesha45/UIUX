@@ -3,9 +3,12 @@ import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import PackageCard from '../../components/PackageCard';
 import { getAllPackage } from '../../apis/Api';
+import { toast } from 'react-toastify';
 
 const Package = () => {
   const [packages, setPackages] = useState([]);
+  const [showBookingForm, setShowBookingForm] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState(null);
 
   const backgroundColors = [
     '#B8719B', 
@@ -26,6 +29,17 @@ const Package = () => {
       console.error("Error fetching packages:", error); 
     })
   }, [])
+
+  const handleBook = (pkg) => {
+    setSelectedPackage(pkg);
+    setShowBookingForm(true);
+  };
+
+  const handleBookingCreated = (newBooking) => {
+    // This fires when the booking is successfully created
+    toast.success("Your package booking was created!");
+    setShowBookingForm(false);
+  };
   
   return (
     <div>
