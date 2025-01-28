@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import BookingForm from './Bookingform';
+import BookingForm from './BookingForm';
 
 
 const PackageCard = ({ title, description, price, imageUrl, backgroundColor }) => {
