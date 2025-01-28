@@ -54,23 +54,23 @@ const Homepage = () => {
         >
           <div>
             <img
-              src="caro1.jpg"
+              src="carou3.jpeg"
               alt="Decoration 1"
-              className="object-cover w-full h-full"
+              className="object-cover w-full h-1/2"
             />
           </div>
           <div>
             <img
-              src="caro2.jpg"
+              src="carou2.jpg"
               alt="Decoration 2"
-              className="object-cover w-full h-full"
+              className="object-cover w-full h-1/2"
             />
           </div>
           <div>
             <img
-              src="caro3.jpg"
+              src="caro1.jpg"
               alt="Decoration 3"
-              className="object-cover w-full h-full"
+              className="object-cover w-full h-1/2"
             />
           </div>
         </Carousel>
