@@ -10,7 +10,6 @@ const Login = () => {
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
@@ -51,9 +50,9 @@ const Login = () => {
     loginUserApi(data)
       .then((res) => {
         if (res.data.success === false) {
-          toast.error(res.data.message);
+          toast.error("Login failed. Please try again.");
         } else {
-          toast.success(res.data.message);
+          toast.success( "User logged in successfully!");
 
           localStorage.setItem("token", res.data.token);
           localStorage.setItem("user", JSON.stringify(res.data.user));
@@ -69,7 +68,7 @@ const Login = () => {
         }
       })
       .catch((error) => {
-        toast.error("Login failed");
+        toast.error("Password incorrect. Please try again.");
       });
   };
 

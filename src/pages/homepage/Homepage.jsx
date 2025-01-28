@@ -9,11 +9,11 @@ import Footer from '../../components/Footer';
 import Navbar from '../../components/Navbar';
 
 const STEP = 1000;
-const MIN = 1000;
+const MIN = 10;
 const MAX = 140000;
 
 const Homepage = () => {
-  const [values, setValues] = useState([1000, 140000]);
+  const [values, setValues] = useState([10, 140000]);
   const [events, setEvents] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
