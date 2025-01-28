@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { getUserBookings, updatePaymentMethod } from '../../apis/Api';
-import Footer from '../../components/Footer';
-import Navbar from '../../components/Navbar';
+import React, { useEffect, useState } from "react";
+import { getUserBookings, updatePaymentMethod } from "../../apis/Api";
+import Footer from "../../components/Footer";
+import Navbar from "../../components/Navbar";
+import KhaltiCheckout from "khalti-checkout-web"; // <--- Import Khalti SDK
 
 const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -14,22 +15,23 @@ const MyBookings = () => {
       setBookings(response.data.data);
       setLoading(false);
     } catch (error) {
-      setError('Failed to fetch bookings');
+      setError("Failed to fetch bookings");
       setLoading(false);
     }
-  }
+  };
+
   useEffect(() => {
     fetchBookings();
   }, []);
 
   const formatDate = (isoDate) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(isoDate).toLocaleDateString(undefined, options);
-  }
+  };
 
   const handlePaymentMethod = async (bookingId, method) => {
     try {
-      await updatePaymentMethod({bookingId, paymentMethod: method});
+      await updatePaymentMethod({ bookingId, paymentMethod: method });
       setBookings((prevBookings) =>
         prevBookings.map((b) =>
           b._id === bookingId ? { ...b, paymentMethod: method } : b
@@ -38,7 +40,57 @@ const MyBookings = () => {
     } catch (error) {
       console.error("Error updating payment method:", error);
     }
-  }
+  };
+
+  // ------------------------------------------------
+  // 2. KHALTI INTEGRATION
+  // ------------------------------------------------
+  // Sample config — adjust to your keys/needs
+  const khaltiConfig = {
+    // For demonstration, using a sample test key;
+    // Replace with your actual key from environment if needed.
+    publicKey: "test_public_key_0e1cf205988d4124b151e7a0288cefa4",
+    productIdentity: "1234567890", // you can set dynamic ID if needed
+    productName: "Event Booking",
+    productUrl: window.location.href, // or your booking page URL
+    eventHandler: {
+      onSuccess(payload) {
+        console.log("Khalti Payment Success:", payload);
+        alert("Payment successful!");
+        // You can add more logic here, e.g., calling your backend to finalize the booking
+      },
+      onError(error) {
+        console.log("Khalti Payment Error:", error);
+        alert("Payment failed. Please try again.");
+      },
+      onClose() {
+        console.log("Khalti widget is closing.");
+      },
+    },
+    paymentPreference: [
+      "KHALTI",
+      "EBANKING",
+      "MOBILE_BANKING",
+      "CONNECT_IPS",
+      "SCT",
+    ],
+  };
+
+  // This function opens the Khalti widget for a specific booking
+  const handleKhaltiPayment = (bookingData) => {
+    // 1) Optionally set paymentMethod in your DB:
+    handlePaymentMethod(bookingData._id, "khalti");
+
+    // 2) Show Khalti widget
+    let checkout = new KhaltiCheckout(khaltiConfig);
+
+    // The Khalti SDK requires the amount in **paisa**.
+    // If bookingData.totalPrice is in rupees, multiply by 100.
+    const amountInPaisa = bookingData.totalPrice * 100;
+
+    checkout.show({ amount: amountInPaisa });
+  };
+  // ------------------------------------------------
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -62,8 +114,7 @@ const MyBookings = () => {
             </thead>
             <tbody>
               {bookings.map((data) => (
-                <tr
-                  key={data._id}>
+                <tr key={data._id}>
                   <td className="px-4 py-2">{data.eventType}</td>
                   <td className="px-4 py-2">Rs {data.totalPrice}</td>
                   <td className="px-4 py-2">{formatDate(data.date)}</td>
@@ -72,24 +123,29 @@ const MyBookings = () => {
                   <td className="px-4 py-2">
                     {data.paymentMethod ? (
                       // If already chosen, display the chosen payment method
-                      <button className="bg-primary text-white px-4 py-2 rounded-md">
+                      <p className=" text-gray-700 px-4 py-2 rounded-md">
                         {data.paymentMethod}
-                      </button>
+                      </p>
                     ) : (
                       // If not chosen yet, allow user to pick
                       <div className="flex gap-2">
                         <button
-                          onClick={() => handlePaymentMethod(data._id, 'cod')}
+                          onClick={() =>
+                            handlePaymentMethod(data._id, "cod")
+                          }
                           className="bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700 transition"
                         >
                           Pay on Arrival
                         </button>
-                        {/* <button
-                          onClick={() => handlePaymentMethod(data._id, 'khalti')}
-                          className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition"
+
+                        {/* KHALTI PAYMENT BUTTON */}
+                        <button
+                          onClick={() => handleKhaltiPayment(data)}
+                          className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition"
                         >
-                          Online Payment
-                        </button> */}
+                          Khalti Payment
+                        </button>
+                        {/* END KHALTI PAYMENT BUTTON */}
                       </div>
                     )}
                   </td>
