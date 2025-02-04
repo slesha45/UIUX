@@ -31,7 +31,7 @@ const HowItWorks = () => {
 
   return (
     <div>
-      <Navbar />
+
       <div className="max-w-7xl mx-auto px-4 mt-8">
         <h1 className="text-5xl mb-6 font-jacques">How the system works?</h1>
 

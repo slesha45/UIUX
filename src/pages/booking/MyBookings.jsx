@@ -97,7 +97,7 @@ const MyBookings = () => {
 
   return (
     <div>
-      <Navbar />
+
       <div className="max-w-7xl mx-auto px-4 mt-8">
         <h1 className="text-5xl font-jacques mb-6">My Bookings</h1>
         <div className="overflow-x-auto">

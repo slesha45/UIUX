@@ -22,12 +22,13 @@ import MyPlans from './pages/plans/MyPlans';
 import MyProfile from './pages/profile/MyProfile';
 import MyWishlist from './pages/wishlist/MyWishlist';
 import AdminRoute from './protected_routes/AdminRoute';
-// import Payment from './pages/payment/Payment';
-// import PaymentSuccess from './pages/payment/PaymentSuccess';
+import SwitchBar from './components/SwitchBar';
+
 function App() {
   return (
     <React.Fragment>
       <Router>
+        <SwitchBar/>
         <Routes>
           <Route path='/' element={<Homepage />} />
           <Route path='/login' element={<Login />} />

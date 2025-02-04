@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { FaLock } from "react-icons/fa6";
 import { FiMail } from "react-icons/fi";
-import Navbar from '../../../components/Navbar';
 import { useNavigate } from 'react-router-dom';
-import { loginUserApi } from '../../../apis/Api';
 import { toast } from 'react-toastify';
+import { loginUserApi } from '../../../apis/Api';
 
 const Login = () => {
-  
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -52,7 +51,7 @@ const Login = () => {
         if (res.data.success === false) {
           toast.error("Login failed. Please try again.");
         } else {
-          toast.success( "User logged in successfully!");
+          toast.success("User logged in successfully!");
 
           localStorage.setItem("token", res.data.token);
           localStorage.setItem("user", JSON.stringify(res.data.user));
@@ -75,7 +74,6 @@ const Login = () => {
 
   return (
     <div className="h-screen w-screen overflow-hidden">
-      <Navbar />
       <div className="flex h-full">
         <div className="w-1/2">
           <img
@@ -94,7 +92,7 @@ const Login = () => {
                 <label className="flex items-center border border-gray-300 rounded-s px-3 py-2">
                   <FiMail className="text-gray-400 mr-2" />
                   <input
-                  onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
                     type="email"
                     placeholder="Enter email address"
                     className="flex-1 border-none focus:outline-none focus:ring-0 text-gray-600"
@@ -107,7 +105,7 @@ const Login = () => {
                 <label className="flex items-center border border-gray-300 rounded-s px-3 py-2">
                   <FaLock className="text-gray-400 mr-2" />
                   <input
-                  onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                     type="password"
                     placeholder="Enter password"
                     className="flex-1 border-none focus:outline-none focus:ring-0 text-gray-600"
@@ -117,9 +115,9 @@ const Login = () => {
 
               </div>
               <div className="flex justify-end mb-4 font-poppins text-sm">
-                <a href="#" className="text-sm text-primary hover:underline">
+                {/* <a href="#" className="text-sm text-primary hover:underline">
                   Forgot Password?
-                </a>
+                </a> */}
               </div>
               <button onClick={handleLogin} className="w-full bg-primary text-white py-2 rounded-s text-base hover:bg-blue-400 transition duration-300 font-poppins">
                 Login

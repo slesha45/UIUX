@@ -3,12 +3,12 @@ import { CiSearch } from "react-icons/ci";
 import { Range } from 'react-range';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import { getAllEvent } from '../../apis/Api'; // Ensure the API is imported
+import { getAllEvent } from '../../apis/Api'; 
 import EventCard from '../../components/EventCard';
 import Footer from '../../components/Footer';
 import Navbar from '../../components/Navbar';
 
-const STEP = 1000;
+const STEP = 10;
 const MIN = 10;
 const MAX = 140000;
 
@@ -40,10 +40,10 @@ const Homepage = () => {
 
   return (
     <div>
-      <Navbar />
+
 
       {/* Carousel Section */}
-      <div >
+      <div className="relative">
         <Carousel
           showThumbs={false}
           autoPlay
@@ -56,21 +56,21 @@ const Homepage = () => {
             <img
               src="carou3.jpeg"
               alt="Decoration 1"
-              className="object-cover w-full h-1/2"
+              className="object-cover w-full h-56 sm:h-72 md:h-96 lg:h-[500px]"
             />
           </div>
           <div>
             <img
               src="carou2.jpg"
               alt="Decoration 2"
-              className="object-cover w-full h-1/2"
+              className="object-cover w-full h-56 sm:h-72 md:h-96 lg:h-[500px]"
             />
           </div>
           <div>
             <img
               src="caro1.jpg"
               alt="Decoration 3"
-              className="object-cover w-full h-1/2"
+              className="object-cover w-full h-56 sm:h-72 md:h-96 lg:h-[500px]"
             />
           </div>
         </Carousel>
@@ -78,11 +78,11 @@ const Homepage = () => {
 
       {/* Search and Filter Section */}
       <div className="mt-8 max-w-7xl mx-auto px-4">
-        <h2 className="text-3xl font-jacques mb-4">Decorations</h2>
-        <div className="bg-darkBlue p-4 rounded-lg flex justify-between items-center gap-4 shadow-lg">
+        <h2 className="text-2xl font-jacques sm:text-3xl font-bold mb-4">Decorations</h2>
+        <div className="bg-darkBlue p-4 rounded-lg flex flex-wrap gap-4 justify-between items-center shadow-lg">
           {/* Search Bar */}
-          <div className="relative w-1/2">
-            <CiSearch className="absolute left-3 top-2/4 transform -translate-y-2/4 text-gray-400" />
+          <div className="relative flex-1 min-w-[200px]">
+            <CiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="text"
               placeholder="Search decorations..."
@@ -93,16 +93,14 @@ const Homepage = () => {
           </div>
 
           {/* Price Range Filter */}
-          <div className="flex items-center">
-            {/* Min Price */}
-            <div className="text-sm text-primary bg-white px-4 py-2 rounded-lg shadow mr-4 text-center">
+          <div className="flex flex-wrap gap-4 items-center">
+            <div className="text-sm text-primary bg-white px-4 py-2 rounded-lg shadow text-center">
               Min Price
               <br />
               <span className="font-semibold text-lg">NPR {values[0].toLocaleString()}</span>
             </div>
 
-            {/* Range Slider */}
-            <div className="w-64">
+            <div className="w-64 max-w-full">
               <Range
                 step={STEP}
                 min={MIN}
@@ -130,14 +128,15 @@ const Homepage = () => {
               />
             </div>
 
-            {/* Max Price */}
-            <div className="text-sm text-primary bg-white px-4 py-2 rounded-lg shadow ml-4 text-center">
+            <div className="text-sm text-primary bg-white px-4 py-2 rounded-lg shadow text-center">
               Max Price
               <br />
               <span className="font-semibold text-lg">NPR {values[1].toLocaleString()}</span>
             </div>
           </div>
         </div>
+
+        {/* Event Cards Section */}
         <div className="mt-8 mb-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredEvents.length > 0 ? (
             filteredEvents.map((event) => (

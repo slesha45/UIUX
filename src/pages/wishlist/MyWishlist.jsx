@@ -44,7 +44,7 @@ const MyWishlist = () => {
 
   return (
     <div>
-      <Navbar />
+
       <div className="max-w-7xl mx-auto px-4 mt-8">
         <h1 className="text-5xl font-jacques mb-6">My Wishlist</h1>
         {error && <p className="text-red-500 mb-4">{error}</p>}

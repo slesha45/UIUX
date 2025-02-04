@@ -90,7 +90,7 @@ const Register = () => {
 
   return (
     <div className="h-screen w-screen overflow-hidden">
-      <Navbar />
+
       <div className="flex h-full">
         <div className="w-1/2">
           <img

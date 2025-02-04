@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { CiHeart, CiUser } from "react-icons/ci";
 import { FiMenu, FiX } from "react-icons/fi";
-import { CiUser } from "react-icons/ci";
-import { CiHeart } from "react-icons/ci";
 import { IoIosNotificationsOutline } from "react-icons/io";
+import { Link, useNavigate } from "react-router-dom";
 import { getUserNotificationsApi } from "../apis/Api";
-
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,16 +11,44 @@ const Navbar = () => {
   const [notifications, setNotifications] = useState([]);
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
 
-  const isActive = (path) => window.location.pathname === path;
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user"));
 
-  const user = JSON.parse(localStorage.getItem('user'))
-  const navigate = useNavigate()
+  // Refs to detect outside clicks
+  const notificationRef = useRef(null);
+  const profileRef = useRef(null);
 
   useEffect(() => {
     if (user) {
       fetchNotifications();
     }
   }, [user]);
+
+  // Listen for clicks outside of either dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Close Notification dropdown if click is outside of its container
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(event.target)
+      ) {
+        setShowNotificationDropdown(false);
+      }
+
+      // Close Profile dropdown if click is outside of its container
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const fetchNotifications = async () => {
     try {
@@ -37,11 +63,11 @@ const Navbar = () => {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   const handleLogout = () => {
-    localStorage.removeItem('user')
-    localStorage.removeItem('token')
-    navigate('/')
-    window.dispatchEvent(new Event('storage'))
-  }
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    navigate("/");
+    window.dispatchEvent(new Event("storage"));
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -51,23 +77,32 @@ const Navbar = () => {
     setShowNotificationDropdown(!showNotificationDropdown);
   };
 
+  const toggleProfileDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const isActive = (path) => window.location.pathname === path;
+
   return (
     <div className="sticky top-0 z-[60] w-full font-poppins text-base">
       <nav className="bg-white border-b border-gray-200 shadow-sm h-24">
         <div className="flex items-center justify-between px-4 md:px-8 py-2 max-w-full">
+          {/* Logo */}
           <div className="text-lg md:text-xl font-bold flex-shrink-0 ml-2">
             <Link to="/" className="text-black hover:text-gray-600">
-              <img src="logo.png" className="h-20 w-20"/>
+              <img src="logo.png" className="h-20 w-20" alt="Logo" />
             </Link>
           </div>
 
+          {/* Mobile Menu Button */}
           <button
             className="md:hidden text-2xl flex-shrink-0"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            onClick={toggleMenu}
           >
             {isMenuOpen ? <FiX /> : <FiMenu />}
           </button>
 
+          {/* Menu Items */}
           <nav
             className={`${
               isMenuOpen ? "block" : "hidden"
@@ -99,50 +134,59 @@ const Navbar = () => {
             </ul>
           </nav>
 
+          {/* Right Side Icons/Login/Register */}
           <div className="flex items-center space-x-2 md:space-x-4 flex-shrink-0">
-          {user && (
-              <button
-                onClick={toggleNotificationDropdown}
-                className="relative text-gray-600 hover:text-black"
-              >
-                <IoIosNotificationsOutline className="text-lg" />
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1.5 -right-2 bg-red-500 text-white text-xs px-1 rounded-full">
-                    {unreadCount}
-                  </span>
-                )}
-              </button>
-            )}
-            {/* Notification Dropdown */}
-            {showNotificationDropdown && (
-              <div className="absolute top-10 right-0 mt-2 w-72 bg-white border rounded-lg shadow-lg p-2 z-50 max-h-80 overflow-auto">
-                {notifications.length === 0 ? (
-                  <p className="text-sm text-gray-500">No notifications</p>
-                ) : (
-                  notifications.map((notif) => (
-                    <div
-                      key={notif._id}
-                      className={`p-2 mb-1 rounded hover:bg-gray-100 cursor-pointer ${
-                        notif.read ? "text-gray-600" : "font-semibold"
-                      }`}
-                    >
-                      {notif.message}
-                    </div>
-                  ))
+            {/* Notifications */}
+            {user && (
+              <div className="relative" ref={notificationRef}>
+                <button
+                  onClick={toggleNotificationDropdown}
+                  className="relative text-gray-600 hover:text-black"
+                >
+                  <IoIosNotificationsOutline className="text-xl" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1.5 -right-2 bg-red-500 text-white text-xs px-1 rounded-full">
+                      {unreadCount}
+                    </span>
+                  )}
+                </button>
+
+                {showNotificationDropdown && (
+                  <div className="absolute top-10 right-0 mt-2 w-72 bg-white border rounded-lg shadow-lg p-2 z-50 max-h-80 overflow-auto">
+                    {notifications.length === 0 ? (
+                      <p className="text-sm text-gray-500">
+                        No notifications
+                      </p>
+                    ) : (
+                      notifications.map((notif) => (
+                        <div
+                          key={notif._id}
+                          className={`p-2 mb-1 rounded hover:bg-gray-100 cursor-pointer ${
+                            notif.read ? "text-gray-600" : "font-light"
+                          }`}
+                        >
+                          {notif.message}
+                        </div>
+                      ))
+                    )}
+                  </div>
                 )}
               </div>
             )}
+
+            {/* Wishlist */}
             <Link to="/wishlist">
               <button className="text-gray-600 hover:text-black">
                 <CiHeart className="text-xl" />
               </button>
             </Link>
 
+            {/* User Profile */}
             {user ? (
-              <div className="relative">
+              <div className="relative" ref={profileRef}>
                 <button
                   className="text-gray-600 hover:text-black"
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  onClick={toggleProfileDropdown}
                 >
                   <CiUser className="text-xl" />
                 </button>

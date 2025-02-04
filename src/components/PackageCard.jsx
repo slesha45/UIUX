@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import BookingForm from './BookingForm';
 
 
-const PackageCard = ({ title, description, price, imageUrl, backgroundColor }) => {
+const PackageCard = ({ title, description, price, imageUrl, backgroundColor, onBook }) => {
   const [showForm, setShowForm] = useState(false);
 
   const handleBookingSubmit = (formData) => {
@@ -25,7 +25,7 @@ const PackageCard = ({ title, description, price, imageUrl, backgroundColor }) =
         <div className="flex justify-center">
           <button
             className="bg-white text-gray-900 py-2 rounded shadow hover:bg-gray-200 transition text-sm w-24"
-            onClick={() => setShowForm(true)}
+            onClick={onBook}
           >
             BOOK
           </button>

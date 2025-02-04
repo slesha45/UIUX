@@ -119,7 +119,7 @@ const DetailsPage = () => {
     } catch (error) {
       console.error("Failed to add review:", error);
       if (error.response && error.response.status === 401) {
-        toast.error("Please log in first"); // If unauthorized
+        toast.error("Please log in first"); 
       } else {
         toast.error("An error occurred while adding the review");
       }
@@ -132,7 +132,7 @@ const DetailsPage = () => {
 
   return (
     <>
-      <Navbar />
+
       <div className="container mx-auto p-6 font-poppins">
         {/* Event Header */}
         <div className="flex flex-col md:flex-row gap-6">
