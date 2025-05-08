@@ -151,6 +151,7 @@ const BookingForm = ({ onClose, onBookingCreated, initialData }) => {
               className={`w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 ${
                 errors.date ? "border-red-500" : "focus:ring-blue-400"
               }`}
+              min={new Date().toISOString().split("T")[0]}
             />
             {errors.date && (
               <p className="text-red-500 text-sm mt-1">{errors.date}</p>
