@@ -88,7 +88,7 @@ const ManageBookings = () => {
                         {booking.user?.fullName}
                       </td>
                       <td className="px-4 py-2 border border-gray-300">
-                        {booking.plan?.event?.eventTitle}
+                        {booking.eventType}
                       </td>
                       <td className="px-4 py-2 border border-gray-300">
                         {new Date(booking.date).toLocaleDateString()}
