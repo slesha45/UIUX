@@ -19,13 +19,13 @@ const Footer = () => {
                 <div>
                     <h3 className="font-bold text-lg mb-4">Support</h3>
                     <ul className="space-y-2">
-                        <li className="text-sm hover:underline cursor-pointer">
+                        <li className="text-sm">
                             Maitidevi, Kathmandu
                         </li>
-                        <li className="text-sm hover:underline cursor-pointer">
+                        <li className="text-sm">
                             jhakasevents@gmail.com
                         </li>
-                        <li className="text-sm hover:underline cursor-pointer">
+                        <li className="text-sm">
                             +977 9874563214
                         </li>
                     </ul>
@@ -35,11 +35,11 @@ const Footer = () => {
                 <div>
                     <h3 className="font-bold text-lg mb-4">Account</h3>
                     <ul className="space-y-2">
-                        <li className="text-sm hover:underline cursor-pointer">My Account</li>
-                        <li className="text-sm hover:underline cursor-pointer">Login / Register</li>
-                        <li className="text-sm hover:underline cursor-pointer">My Plans</li>
-                        <li className="text-sm hover:underline cursor-pointer">My Wishlist</li>
-                        <li className="text-sm hover:underline cursor-pointer">My Bookings</li>
+                        <li className="text-sm hover:underline cursor-pointer"><a href="/profile"> My Account</a></li>
+                        <li className="text-sm hover:underline cursor-pointer"><a href="/login">Login / Register</a></li>
+                        <li className="text-sm hover:underline cursor-pointer"><a href="/plans">My Plans</a></li>
+                        <li className="text-sm hover:underline cursor-pointer"><a href="/wishlist">My Wishlist</a></li>
+                        <li className="text-sm hover:underline cursor-pointer"><a href="/bookings">My Bookings</a></li>
                     </ul>
                 </div>
 
@@ -47,7 +47,7 @@ const Footer = () => {
                 <div>
                     <h3 className="font-bold text-lg mb-4">Quick Link</h3>
                     <ul className="space-y-2">
-                        <li className="text-sm hover:underline cursor-pointer">Our Services</li>
+                        <li className="text-sm hover:underline cursor-pointer"><a href="/works">How It Works</a></li>
                         <li className="text-sm hover:underline cursor-pointer">Terms of Use</li>
                     </ul>
                 </div>
